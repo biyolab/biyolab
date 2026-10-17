@@ -73,7 +73,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;bord
 <button class="btn mode" data-m="2"><div class="num">2</div><div><b>Hızlı Karar / Rush Mode</b><span>5 saniyen var! Kombo yap, 3 canını koru.</span></div></button>
 <button class="btn mode" data-m="3"><div class="num">3</div><div><b>Biyoloji Dedektifi</b><span>Vakaları çöz, biyolojik mantık yürüt.</span></div></button>
 <button class="btn mode" data-m="4"><div class="num">4</div><div><b>Karma Laboratuvar</b><span>Doğru/yanlış, canlı mı cansız mı, boşluk doldurma ve sıralama.</span></div></button>
-<button class="btn mode" data-m="5"><div class="num">5</div><div><b>Yanlışlarım</b><span>Daha önce yanlış bildiğin soruları süresiz tekrar et; doğru bildikçe listeden silinir.</span></div></button>
+<button class="btn mode" data-m="5"><div class="num">5</div><div><b>Yanlışlarım <span id="wc"></span></b><span>Daha önce yanlış bildiğin soruları süresiz tekrar et; doğru bildikçe listeden silinir.</span></div></button>
 </div>
 <div class="row"><button class="btn sm" id="b-learn">📚 Bilgi Kartları</button><button class="btn sm" id="b-lb">🏆 Liderlik Tablosu</button></div>
 </section>
@@ -193,7 +193,7 @@ var C=[
 var $=function(s){return document.querySelector(s)},$$=function(s){return document.querySelectorAll(s)};
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
-function show(id){$$(".screen").forEach(function(e){e.classList.remove("on")});$("#s-"+id).classList.add("on");window.scrollTo(0,0)}
+function show(id){$$(".screen").forEach(function(e){e.classList.remove("on")});$("#s-"+id).classList.add("on");window.scrollTo(0,0);if(id==="menu")$("#wc").textContent="("+getW().length+")"}
 
 /* ---- Ses (Web Audio API) ---- */
 var AC=null,mute=false;
@@ -222,6 +222,7 @@ function setW(a){try{localStorage.setItem("bio_wrong",JSON.stringify(a.slice(-60
 function addW(q){var a=getW();if(a.indexOf(q)<0){a.push(q);setW(a)}}
 function unW(q){setW(getW().filter(function(x){return x!==q}))}
 function DIF(){return +$("#dif").value}
+$("#wc").textContent="("+getW().length+")";
 function jl(){$("#j1").textContent="50:50 ("+(S.j1||0)+")";$("#j2").textContent="+3 sn ("+(S.j2||0)+")"}
 $("#j1").onclick=function(){if((S.mode!==2&&S.mode!==5)||S.ans||S.h||!(S.j1>0))return;S.j1--;S.h=1;var k=S.queue[S.idx][1],n=0;sh(Array.prototype.slice.call($$("#g2o .opt"))).forEach(function(b){if(+b.dataset.k!==k&&n<2){n++;b.style.visibility="hidden";b.disabled=true}});jl()};
 $("#j2").onclick=function(){if(S.mode!==2||S.ans||!(S.j2>0))return;S.j2--;S.add=3000;SFX.click();jl()};
@@ -272,9 +273,9 @@ function g2a(k){
   $$("#g2o .opt").forEach(function(b){b.disabled=true;if(+b.dataset.k===it[1])b.classList.add("ok");else if(+b.dataset.k===k)b.classList.add("no")});
   if(ok){S.combo++;S.max=Math.max(S.max,S.combo);var m=Math.min(S.combo,5);S.score+=10*m+(S.rev?0:Math.min(10,Math.floor(S.left/500)));S.correct++;if(S.rev)unW(it[0]);(m>=2?SFX.combo:SFX.ok)()}
   else{if(!S.rev)S.lives--;S.combo=0;lives();addMiss(it[0],k<0?"Süre doldu":P[k][0],P[it[1]][0],it[2]);SFX.bad()}
-  $("#g2s").textContent="Skor: "+S.score;$("#g2c").textContent="Kombo x"+Math.max(1,Math.min(S.combo,5));
-  var f=$("#g2f");f.style.display="block";f.innerHTML=(ok?"✅ Doğru! ":"❌ Doğru cevap: <b>"+esc(P[it[1]][0])+"</b>. ")+esc(it[2]);
-  S.idx++;setTimeout(g2n,ok?900:2200)}
+  $("#g2s").textContent="Skor: "+S.score+(S.rev?" · Kalan: "+getW().length:"");$("#g2c").textContent="Kombo x"+Math.max(1,Math.min(S.combo,5));
+  var f=$("#g2f");f.style.display="block";f.innerHTML=(ok?"✅ Doğru! "+(S.rev?"Bu soru listenden çıktı. ":""):"❌ Doğru cevap: <b>"+esc(P[it[1]][0])+"</b>. ")+esc(it[2]);
+  S.idx++;var gS=S;setTimeout(function(){if(S===gS&&$("#s-g2").classList.contains("on"))g2n()},ok?900:2200)}
 
 /* ---- MOD 3: Dedektif ---- */
 function g3(){S.cases=sh(C);S.idx=0;$("#g3s").textContent="Skor: 0";g3n()}
