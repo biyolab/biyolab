@@ -67,10 +67,13 @@ table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;bord
 <h1>BiyoLab</h1>
 <p class="sub">9. Sınıf Biyoloji · Canlıların Ortak Özellikleri</p>
 <label>Oyuncu adın</label><input id="pname" maxlength="16" placeholder="Adını yaz...">
+<label>Zorluk (Rush Mode: süre ve can)</label><select id="dif" style="font:inherit;width:100%;padding:11px;border-radius:12px;border:1px solid var(--bd);background:#0b1624;color:var(--t);margin:6px 0 12px"><option value="0">Kolay · 8 sn · 4 can</option><option value="1" selected>Orta · 5 sn · 3 can</option><option value="2">Zor · 3,5 sn · 2 can</option></select>
 <div class="menu">
 <button class="btn mode" data-m="1"><div class="num">1</div><div><b>Kavram Match &amp; Drag</b><span>Örnekleri sürükleyip doğru ortak özellik kartıyla eşleştir.</span></div></button>
 <button class="btn mode" data-m="2"><div class="num">2</div><div><b>Hızlı Karar / Rush Mode</b><span>5 saniyen var! Kombo yap, 3 canını koru.</span></div></button>
 <button class="btn mode" data-m="3"><div class="num">3</div><div><b>Biyoloji Dedektifi</b><span>Vakaları çöz, biyolojik mantık yürüt.</span></div></button>
+<button class="btn mode" data-m="4"><div class="num">4</div><div><b>Karma Laboratuvar</b><span>Doğru/yanlış, canlı mı cansız mı, boşluk doldurma ve sıralama.</span></div></button>
+<button class="btn mode" data-m="5"><div class="num">5</div><div><b>Yanlışlarım</b><span>Daha önce yanlış bildiğin soruları süresiz tekrar et; doğru bildikçe listeden silinir.</span></div></button>
 </div>
 <div class="row"><button class="btn sm" id="b-learn">📚 Bilgi Kartları</button><button class="btn sm" id="b-lb">🏆 Liderlik Tablosu</button></div>
 </section>
@@ -92,7 +95,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;bord
 </section>
 
 <section id="s-g2" class="screen glass">
-<div class="top"><span class="pill" id="g2s">Skor: 0</span><span class="pill" id="g2c">Kombo x1</span><span class="pill" id="g2l">❤❤❤</span><button class="btn sm back">✖ Çık</button></div>
+<div class="top"><span class="pill" id="g2s">Skor: 0</span><span class="pill" id="g2c">Kombo x1</span><span class="pill" id="g2l">❤❤❤</span><button class="btn sm" id="j1">50:50 (2)</button><button class="btn sm" id="j2">+3 sn (2)</button><button class="btn sm back">✖ Çık</button></div>
 <div class="bar" id="g2bar"><i id="g2t"></i></div>
 <div class="q" id="g2q"></div><div class="opts" id="g2o"></div><div class="fb" id="g2f"></div>
 </section>
@@ -102,6 +105,12 @@ table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;bord
 <h2>🔍 Vaka Dosyası</h2>
 <div class="q" id="g3q" style="text-align:left"></div><div class="opts" id="g3o" style="grid-template-columns:1fr"></div>
 <div class="fb" id="g3f"></div><div class="row"><button class="btn" id="g3n" style="display:none">Sonraki Vaka →</button></div>
+</section>
+
+<section id="s-g4" class="screen glass">
+<div class="top"><span class="pill" id="g4s">Skor: 0</span><span class="pill" id="g4p">1/13</span><button class="btn sm back">✖ Çık</button></div>
+<div class="q" id="g4q"></div><div class="opts" id="g4o"></div><div class="fb" id="g4f"></div>
+<div class="row"><button class="btn" id="g4n" style="display:none">Sonraki →</button></div>
 </section>
 
 <section id="s-end" class="screen glass">
@@ -151,7 +160,28 @@ var Q=[
 ["Hücrelerden dokuların, dokulardan organların oluşması",10,"Basitten karmaşığa hiyerarşik düzen organizasyondur."],
 ["Kalp, damarlar ve kanın birlikte dolaşım sistemini oluşturması",10,"Organların birlikte sistem oluşturması organizasyon düzeyidir."],
 ["İnsanın terleyerek vücut sıcaklığını sabit tutması",11,"İç ortamın dengede tutulması homeostazidir."],
-["Kan şekerinin insülin ve glukagonla dengede kalması",11,"Hormonlarla iç dengenin korunması homeostazidir."]];
+["Kan şekerinin insülin ve glukagonla dengede kalması",11,"Hormonlarla iç dengenin korunması homeostazidir."],
+["Mantar hücrelerinde zarlı çekirdek ve hücre duvarı bulunması",0,"Zarlı çekirdek ökaryot hücre yapısının göstergesidir."],
+["Siyanobakterilerin çekirdeksiz hücrelere sahip olması",0,"Prokaryotlarda zarlı çekirdek ve organel yoktur; bu hücresel yapı özelliğidir."],
+["Demir bakterilerinin inorganik maddelerden enerji alıp besin üretmesi",1,"Kemosentez yapan canlılar ototroftur."],
+["Mantarın ölü organik maddeleri sindirip emmesi",1,"Hazır organik madde kullanan canlı heterotroftur."],
+["Mayanın oksijensiz ortamda glikozu parçalayarak ATP elde etmesi",2,"Oksijensiz ortamda da besinden ATP elde edilir; hedef ATP üretimidir."],
+["Kaslar çalışırken hücrelerin daha çok oksijen tüketip ATP üretmesi",2,"ATP ihtiyacı arttıkça hücresel solunum hızlanır."],
+["Fotosentezde CO₂ ve sudan glikoz sentezlenmesi",3,"Küçük moleküllerden büyük molekül yapımı anabolizmadır."],
+["Hücrede glikozun CO₂ ve suya yıkılması",3,"Büyük molekülün yıkımı katabolizmadır."],
+["Bitkilerin yaprak dökerek artık maddeleri uzaklaştırması",4,"Birikmiş artıkların atılması boşaltımdır."],
+["Akciğerlerle CO₂'nin vücuttan uzaklaştırılması",4,"Metabolizma artığı CO₂'nin atılması boşaltım kapsamındadır."],
+["Balığın yüzgeçleriyle suda ilerlemesi",5,"Enerji harcayarak yer değiştirme aktif harekettir."],
+["Su yosununun akıntıyla sürüklenmesi",5,"Dış etkenle taşınma pasif harekettir."],
+["Mimoza yapraklarının dokununca kapanması",6,"Dokunma uyarısına verilen yanıt uyarılara tepkidir."],
+["Aydınlığa çıkınca gözbebeğinin küçülmesi",6,"Işık uyarısına verilen yanıttır."],
+["Develerin hörgücünde yağ depolaması",7,"Kalıtsal yapının çölde yaşamaya uygunluğu uyumdur."],
+["Çöl tilkisinin büyük kulaklarıyla ısı kaybetmesi",7,"Kalıtsal bir özelliğin ortama uygunluğu uyumdur."],
+["Bakterinin ikiye bölünerek çoğalması",8,"Tek ebeveynli yeni birey oluşumu eşeysiz üremedir."],
+["Çiçekli bitkilerde polen ile yumurta hücresinin birleşmesi",8,"Gametlerin birleşmesi eşeyli üremedir."],
+["Bir tohumdan kök, gövde ve yaprakların oluşması",9,"Çok hücreli canlıda hücre sayısının artması ve farklılaşması büyüme-gelişmedir."],
+["Çekirdek, mitokondri ve ribozomun birlikte bir hücreyi oluşturması",10,"Organellerden hücre oluşması organizasyon basamağıdır."],
+["Vücut pH'ının tampon sistemlerle sabit tutulması",11,"İç ortam koşullarının sabit tutulması homeostazidir."]];
 var C=[
 {t:"Bir bilim insanı mikroskopta bir organizmayı inceliyor. Organizma ortamda kristal gibi duruyor, hiçbir metabolik faaliyet göstermiyor; ancak bir konak hücreye girince çoğalıyor. Öğrenci 'Bu canlı mı?' diye tartışıyor. Virüsler için hangisi doğrudur?",o:["Hücresel yapıları ve kendi metabolizmaları yoktur; bu yüzden canlı kabul edilmezler","Çok küçük oldukları için canlı sayılmazlar","Hareket edemedikleri için canlı sayılmazlar","Ürediklerinden tamamen canlıdırlar"],a:0,n:"Virüslerde hücresel yapı ve bağımsız metabolizma yoktur. Üremeleri konak hücrenin enzim ve organellerine bağlıdır; bu yüzden ortak özelliklerin hepsini taşımazlar."},
 {t:"Çölde yaşayan bir bitkinin kökleri çok derine iniyor, yaprakları diken halinde, gövdesi su depolayacak biçimde kalın. Bu bitkiyle ilgili hangi ortak özellik öne çıkar?",o:["Uyum: kalıtsal özelliklerin ortama uygunluğu","Hareket: bitki aktif yer değiştirir","Boşaltım: sadece artık atar","Beslenme: heterotroftur"],a:0,n:"Dikenli yaprak, derin kök ve su depolama kalıtsal yapılardır; uzun evrimsel süreçte kazanılmıştır. Bu uyumdur."},
@@ -178,23 +208,34 @@ function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener("r
 function confetti(){var cl=["#39ff88","#29d9ff","#ffd166","#ff4d6d","#b388ff"];parts=[];for(var i=0;i<180;i++)parts.push({x:innerWidth/2,y:innerHeight*.4,vx:(Math.random()-.5)*16,vy:-Math.random()*14-3,s:Math.random()*8+4,c:cl[i%5],r:Math.random()*6,vr:(Math.random()-.5)*.4,l:150+Math.random()*60});cancelAnimationFrame(raf);(function f(){cx.clearRect(0,0,cv.width,cv.height);parts=parts.filter(function(p){return p.l>0});parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.vx*=.99;p.r+=p.vr;p.l--;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=Math.min(1,p.l/40);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore()});if(parts.length)raf=requestAnimationFrame(f);else cx.clearRect(0,0,cv.width,cv.height)})()}
 
 /* ---- Durum, skor tablosu ---- */
-var S={},timer=null,MN=["","Match & Drag","Rush Mode","Biyoloji Dedektifi"];
+var S={},timer=null,MN=["","Match & Drag","Rush Mode","Biyoloji Dedektifi","Karma Laboratuvar","Yanlışlarım"];
 function getName(){var n=$("#pname").value.trim();if(n)localStorage.setItem("bio_name",n);return n||"Adsız Dahi"}
 try{$("#pname").value=localStorage.getItem("bio_name")||""}catch(e){}
 function getLB(){try{return JSON.parse(localStorage.getItem("bio_lb"))||[]}catch(e){return[]}}
 function saveLB(r){var l=getLB();l.push(r);l.sort(function(a,b){return b.s-a.s});try{localStorage.setItem("bio_lb",JSON.stringify(l.slice(0,10)))}catch(e){}}
 function renderLB(){var l=getLB();$("#lbbox").innerHTML=l.length?"<table><tr><th>#</th><th>Oyuncu</th><th>Mod</th><th>Skor</th><th>Tarih</th></tr>"+l.map(function(r,i){return"<tr><td>"+(i+1)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.m)+"</td><td><b>"+r.s+"</b></td><td>"+esc(r.d)+"</td></tr>"}).join("")+"</table>":"<p class='sub'>Henüz kayıt yok. İlk rekoru sen kır!</p>"}
-function addMiss(q,picked,right,note){if(S.miss.some(function(m){return m.q===q}))return;S.miss.push({q:q,p:picked,r:right,n:note})}
+function addMiss(q,picked,right,note){if(S.miss.some(function(m){return m.q===q}))return;S.miss.push({q:q,p:picked,r:right,n:note});if(Q.some(function(x){return x[0]===q}))addW(q)}
+
+/* ---- Yanlışlarım, zorluk, jokerler ---- */
+function getW(){try{return JSON.parse(localStorage.getItem("bio_wrong"))||[]}catch(e){return[]}}
+function setW(a){try{localStorage.setItem("bio_wrong",JSON.stringify(a.slice(-60)))}catch(e){}}
+function addW(q){var a=getW();if(a.indexOf(q)<0){a.push(q);setW(a)}}
+function unW(q){setW(getW().filter(function(x){return x!==q}))}
+function DIF(){return +$("#dif").value}
+function jl(){$("#j1").textContent="50:50 ("+(S.j1||0)+")";$("#j2").textContent="+3 sn ("+(S.j2||0)+")"}
+$("#j1").onclick=function(){if((S.mode!==2&&S.mode!==5)||S.ans||S.h||!(S.j1>0))return;S.j1--;S.h=1;var k=S.queue[S.idx][1],n=0;sh(Array.prototype.slice.call($$("#g2o .opt"))).forEach(function(b){if(+b.dataset.k!==k&&n<2){n++;b.style.visibility="hidden";b.disabled=true}});jl()};
+$("#j2").onclick=function(){if(S.mode!==2||S.ans||!(S.j2>0))return;S.j2--;S.add=3000;SFX.click();jl()};
 
 /* ---- Menü ---- */
 $$(".back").forEach(function(b){b.onclick=function(){clearInterval(timer);show("menu")}});
 $("#learn").innerHTML=P.map(function(p,i){return"<div class='info'><b>"+(i+1)+". "+esc(p[0])+"</b><br>"+esc(p[1])+"</div>"}).join("");
 $("#b-learn").onclick=function(){show("learn")};
 $("#b-lb").onclick=$("#b-lb2").onclick=function(){renderLB();show("lb")};
-$("#b-clr").onclick=function(){if(confirm("Tüm skorlar silinsin mi?")){localStorage.removeItem("bio_lb");renderLB()}};
+function toast(m){var d=document.createElement("div");d.textContent=m;d.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:70;padding:12px 18px;border-radius:14px;background:rgba(0,0,0,.85);border:1px solid var(--g);color:var(--t)";document.body.appendChild(d);setTimeout(function(){d.remove()},2500)}
+var clrT=0;$("#b-clr").onclick=function(){var b=this;if(!clrT){b.textContent="Emin misin? Tekrar bas";clrT=setTimeout(function(){clrT=0;b.textContent="Tabloyu Temizle"},3000);return}clearTimeout(clrT);clrT=0;b.textContent="Tabloyu Temizle";try{localStorage.removeItem("bio_lb")}catch(e){}renderLB();toast("Tablo temizlendi")};
 $$(".mode").forEach(function(b){b.onclick=function(){start(+b.dataset.m)}});
 $("#b-again").onclick=function(){start(S.mode)};
-function start(m){S={mode:m,score:0,correct:0,total:0,miss:[]};clearInterval(timer);show("g"+m);if(m===1)g1();else if(m===2)g2();else g3()}
+function start(m){S={mode:m,score:0,correct:0,total:0,miss:[]};clearInterval(timer);if(m===5&&!getW().length){toast("Henüz yanlış kaydın yok. Önce başka bir modu oyna!");return}show(m===5?"g2":"g"+m);if(m===1)g1();else if(m===2||m===5)g2();else if(m===3)g3();else g4()}
 
 /* ---- MOD 1: Eşleştirme ---- */
 function g1(){
@@ -217,20 +258,20 @@ function g1(){
 
 /* ---- MOD 2: Rush ---- */
 function g2(){
-  S.queue=sh(Q);S.idx=0;S.lives=3;S.combo=0;S.max=0;lives();$("#g2s").textContent="Skor: 0";$("#g2c").textContent="Kombo x1";g2n()}
-function lives(){var h="";for(var i=0;i<3;i++)h+=i<S.lives?"❤":"🖤";$("#g2l").textContent=h}
+  S.rev=S.mode===5;S.queue=S.rev?sh(Q.filter(function(x){return getW().indexOf(x[0])>-1})):sh(Q);S.idx=0;S.lives=[4,3,2][DIF()];S.j1=2;S.j2=2;jl();S.combo=0;S.max=0;lives();$("#g2s").textContent="Skor: 0";$("#g2c").textContent="Kombo x1";g2n()}
+function lives(){var h="";for(var i=0;i<[4,3,2][DIF()];i++)h+=i<S.lives?"❤":"🖤";$("#g2l").textContent=h}
 function g2n(){
   if(S.lives<=0||S.idx>=S.queue.length){finish(S.total);return}
   var it=S.queue[S.idx],opts=[it[1]];sh(P.map(function(_,i){return i}).filter(function(i){return i!==it[1]})).slice(0,3).forEach(function(i){opts.push(i)});opts=sh(opts);
-  $("#g2q").textContent=it[0];$("#g2f").style.display="none";var o=$("#g2o");o.innerHTML="";
+  S.ans=0;S.h=0;$("#g2q").textContent=it[0];$("#g2f").style.display="none";var o=$("#g2o");o.innerHTML="";
   opts.forEach(function(k){var b=document.createElement("button");b.className="opt";b.textContent=P[k][0];b.dataset.k=k;b.onclick=function(){g2a(k)};o.appendChild(b)});
-  var left=5000,bar=$("#g2bar"),t=$("#g2t");S.left=left;t.style.width="100%";bar.classList.remove("low");clearInterval(timer);
-  timer=setInterval(function(){left-=50;S.left=left;t.style.width=Math.max(0,left/50)+"%";if(left<1500)bar.classList.add("low");if(left<=0){clearInterval(timer);g2a(-1)}},50)}
+  var T=S.rev?1e9:[8000,5000,3500][DIF()],left=T,bar=$("#g2bar"),t=$("#g2t");S.left=left;t.style.width="100%";bar.classList.remove("low");clearInterval(timer);
+  timer=setInterval(function(){left-=50;if(S.add){left+=S.add;if(left>T)T=left;S.add=0}S.left=left;t.style.width=Math.max(0,left/T*100)+"%";if(left<1500)bar.classList.add("low");if(left<=0){clearInterval(timer);g2a(-1)}},50)}
 function g2a(k){
-  clearInterval(timer);var it=S.queue[S.idx];S.total++;var ok=k===it[1];
+  clearInterval(timer);S.ans=1;var it=S.queue[S.idx];S.total++;var ok=k===it[1];
   $$("#g2o .opt").forEach(function(b){b.disabled=true;if(+b.dataset.k===it[1])b.classList.add("ok");else if(+b.dataset.k===k)b.classList.add("no")});
-  if(ok){S.combo++;S.max=Math.max(S.max,S.combo);var m=Math.min(S.combo,5);S.score+=10*m+Math.floor(S.left/500);S.correct++;(m>=2?SFX.combo:SFX.ok)()}
-  else{S.lives--;S.combo=0;lives();addMiss(it[0],k<0?"Süre doldu":P[k][0],P[it[1]][0],it[2]);SFX.bad()}
+  if(ok){S.combo++;S.max=Math.max(S.max,S.combo);var m=Math.min(S.combo,5);S.score+=10*m+(S.rev?0:Math.min(10,Math.floor(S.left/500)));S.correct++;if(S.rev)unW(it[0]);(m>=2?SFX.combo:SFX.ok)()}
+  else{if(!S.rev)S.lives--;S.combo=0;lives();addMiss(it[0],k<0?"Süre doldu":P[k][0],P[it[1]][0],it[2]);SFX.bad()}
   $("#g2s").textContent="Skor: "+S.score;$("#g2c").textContent="Kombo x"+Math.max(1,Math.min(S.combo,5));
   var f=$("#g2f");f.style.display="block";f.innerHTML=(ok?"✅ Doğru! ":"❌ Doğru cevap: <b>"+esc(P[it[1]][0])+"</b>. ")+esc(it[2]);
   S.idx++;setTimeout(g2n,ok?900:2200)}
@@ -248,11 +289,63 @@ function g3a(i){
   $("#g3s").textContent="Skor: "+S.score;var f=$("#g3f");f.style.display="block";f.innerHTML=(ok?"🕵️ Harika tespit! ":"🕵️ Dosya yeniden incelenmeli. ")+"<br>"+esc(c.n);
   var b=$("#g3n");b.style.display="inline-block";b.textContent=S.idx+1>=S.cases.length?"Sonucu Gör":"Sonraki Vaka →";b.onclick=function(){S.idx++;g3n()}}
 
+/* ---- MOD 4: Karma Laboratuvar ---- */
+var TF=[
+["Prokaryot hücrelerde zarlı çekirdek bulunur.",false,"Prokaryotlarda zarla çevrili çekirdek ve organel yoktur."],
+["Üreme, bireyin yaşaması için şarttır.",false,"Üreme bireyin değil, neslin/türün devamı için şarttır."],
+["Anabolizma enerji harcayan yapım tepkimeleridir.",true,"Büyük molekül yapımı enerji gerektirir."],
+["Tüm canlılar ototrof beslenir.",false,"Canlılar ototrof ya da heterotrof olabilir."],
+["Homeostazi, iç ortamın göreli olarak sabit tutulmasıdır.",true,"Dış koşullar değişse de iç denge korunur."],
+["Birey, istediği an ortama uyum sağlayabilir.",false,"Uyum kalıtsaldır ve uzun süreçte, evrimle kazanılır."],
+["Hücresel solunumun amacı ATP üretmektir.",true,"Besinlerdeki enerji ATP'ye aktarılır."],
+["Tek hücrelilerde büyüme, hücre sayısının artmasıdır.",false,"Tek hücrelide hücre büyür; bölünmesi ise üremedir."]];
+var LV=[
+["Virüs",false,"Hücresel yapısı ve kendi metabolizması yoktur."],
+["Mantar",true,"Ökaryot yapılı, heterotrof bir canlıdır."],
+["Alev (ateş)",false,"Büyür ve enerji kullanır ama hücresel yapısı, üremesi ve homeostazisi yoktur."],
+["Bakteri",true,"Prokaryot hücreli bir canlıdır."],
+["Tuz kristali",false,"Büyür ama hücresel yapısı ve metabolizması yoktur."],
+["Kuru tohum",true,"Metabolizması çok yavaşlamıştır ama canlıdır; uygun koşulda çimlenir."],
+["Robot",false,"Yapay bir makinedir; hücre ve metabolizması yoktur."],
+["Amip",true,"Tek hücreli ökaryot bir canlıdır."]];
+var FB=[
+["Işık enerjisiyle kendi besinini üreten canlılara ___ denir.",["ototrof","heterotrof","parazit","saprofit"],"Kendi organik besinini üreten canlı ototroftur."],
+["Besin enerjisinin ATP'ye aktarıldığı olaya ___ denir.",["hücresel solunum","fotosentez","boşaltım","sindirim"],"Bu olay hücresel solunumdur."],
+["Hücredeki yıkım tepkimelerinin tümüne ___ denir.",["katabolizma","anabolizma","homeostazi","adaptasyon"],"Yıkım tepkimeleri katabolizmadır."],
+["Kalıtsal özelliklerin ortama uygunluğuna ___ denir.",["uyum","tepki","gelişme","hareket"],"Ortama uygunluk uyumdur; evrimle kazanılır."],
+["Atom → molekül → organel → hücre → ___ → organ",["doku","sistem","organizma","kromozom"],"Hücrelerden önce doku, sonra organ gelir."],
+["Eşeysiz üremede oluşan yavru, ebeveyniyle genellikle ___ yapıdadır.",["genetik olarak özdeş","genetik olarak çok farklı","eşey hücresinden oluşmuş","iki ebeveynli"],"Tek ebeveynden mitozla oluşur; genetik olarak aynıdır."]];
+var OR=[
+["Organizasyon düzeylerini küçükten büyüğe sırala:",["Atom","Molekül","Organel","Hücre","Doku","Organ","Sistem","Organizma"]],
+["Bir bitkide organizasyonu küçükten büyüğe sırala:",["Hücre","Doku","Organ","Organizma"]]];
+function g4(){
+  var d=[];
+  sh(TF).slice(0,4).forEach(function(x){d.push({y:"Doğru mu, yanlış mı?",q:x[0],o:["Doğru","Yanlış"],a:x[1]?0:1,n:x[2]})});
+  sh(LV).slice(0,4).forEach(function(x){d.push({y:"Canlı mı, cansız mı?",q:x[0],o:["Canlı","Cansız"],a:x[1]?0:1,n:x[2]})});
+  sh(FB).slice(0,3).forEach(function(x){d.push({y:"Boşluğu doldur",q:x[0],o:x[1],a:0,n:x[2]})});
+  sh(OR).forEach(function(x){d.push({y:"Sıraya diz",q:x[0],s:x[1]})});
+  S.d=sh(d);S.idx=0;$("#g4s").textContent="Skor: 0";g4n()}
+function g4n(){
+  if(S.idx>=S.d.length){finish(S.d.length);return}
+  var c=S.d[S.idx],o=$("#g4o");o.innerHTML="";$("#g4p").textContent=(S.idx+1)+"/"+S.d.length;
+  $("#g4q").innerHTML="<small style='color:var(--y)'>"+esc(c.y)+"</small><br>"+esc(c.q);
+  $("#g4f").style.display="none";$("#g4n").style.display="none";
+  if(c.s){var p=0,bad=false;sh(c.s).forEach(function(t){var b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.onclick=function(){if(b.textContent===c.s[p]){b.disabled=true;b.classList.add("ok");SFX.click();p++;if(p===c.s.length)g4r(!bad,"Doğru sıra: "+c.s.join(" → "))}
+      else{bad=true;b.classList.add("shake");setTimeout(function(){b.classList.remove("shake")},400);SFX.bad();addMiss(c.q,"Yanlış sıralama denemesi",c.s.join(" → "),"Basamaklar basitten karmaşığa doğru ilerler.")}};o.appendChild(b)})}
+  else sh(c.o.map(function(_,i){return i})).forEach(function(i){var b=document.createElement("button");b.className="opt";b.textContent=c.o[i];b.dataset.i=i;
+    b.onclick=function(){$$("#g4o .opt").forEach(function(x){x.disabled=true;if(+x.dataset.i===c.a)x.classList.add("ok");else if(+x.dataset.i===i)x.classList.add("no")});
+      var ok=i===c.a;if(!ok)addMiss(c.q,c.o[i],c.o[c.a],c.n);g4r(ok,c.n)};o.appendChild(b)})}
+function g4r(ok,note){
+  S.total++;if(ok){S.score+=15;S.correct++;SFX.ok()}else if(!S.d[S.idx].s)SFX.bad();
+  $("#g4s").textContent="Skor: "+S.score;var f=$("#g4f");f.style.display="block";f.innerHTML=(ok?"✅ Harika! ":"❌ Olmadı. ")+esc(note);
+  var b=$("#g4n");b.style.display="inline-block";b.textContent=S.idx+1>=S.d.length?"Sonucu Gör":"Sonraki →";b.onclick=function(){S.idx++;g4n()}}
+
 /* ---- Oyun sonu ---- */
 function finish(total){
-  clearInterval(timer);var tot=S.mode===2?S.total:total,acc=tot?Math.round(S.correct/tot*100):0,good=acc>=70&&S.score>0;
+  clearInterval(timer);var tot=(S.mode===2||S.mode===5)?S.total:total,acc=tot?Math.round(S.correct/tot*100):0,good=acc>=70&&S.score>0;
   $("#etitle").textContent=MN[S.mode]+" · Oyun Bitti";$("#escore").textContent=S.score;
-  var extra=S.mode===2?" · En yüksek kombo: x"+S.max:"";
+  var extra=(S.mode===2||S.mode===5)?" · En yüksek kombo: x"+S.max:"";
   var msg=acc>=90?"Mükemmel! Gerçek bir biyolog gibisin 🧬":acc>=70?"Harika iş çıkardın! 🎉":acc>=40?"Fena değil, hata analizine göz at 📖":"Bilgi Kartları'na bir bak ve tekrar dene 💪";
   $("#einfo").textContent="Doğruluk: %"+acc+" ("+S.correct+"/"+tot+")"+extra+" — "+msg;
   $("#emiss").innerHTML=S.miss.length?S.miss.map(function(m){return"<div class='miss'><b>"+esc(m.q)+"</b><br>❌ Senin cevabın: "+esc(m.p)+"<br>✅ Doğrusu: <b>"+esc(m.r)+"</b><div class='n'>👩‍🏫 Öğretmen Notu: "+esc(m.n)+"</div></div>"}).join(""):"<p class='sub'>Hiç yanlışın yok, tebrikler! 🏅</p>";
